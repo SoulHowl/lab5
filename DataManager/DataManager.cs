@@ -20,36 +20,40 @@ namespace DataManager
         public string TargetFolderPath { get; set; }
         public async Task MakeTransaction(int num)
         {
-            try
+            await Task.Run(async() =>
             {
-                IFiller<PersonalInfo> filler = new Repository(connectionString, num);
+                try
+                {
+                    IFiller<PersonalInfo> filler = new Repository(connectionString, num);
 
-                IxmlGeneratorService ser1 = new XmlPerson();
+                    IxmlGeneratorService ser1 = new XmlPerson();
 
-                SearchRes<PersonalInfo> info = await Task.Run(() => filler.GetPersonsAsync());
-                await ser1.GenerateXmlFileAsync(info, Pathtosave, Filename);
-                await ser1.GenerateXsdSchemaAsync(Pathtosave, Filename, Schemaname);
-            }
-            catch (Exception ex)
-            {
-                IErLogger logger=new Logger();
-                await Task.Run(()=>logger.WriteErrorAsync(ex));
-            }
-          
+                    SearchRes<PersonalInfo> info = await Task.Run(() => filler.GetPersonsAsync());
+                    await ser1.GenerateXmlFileAsync(info, Pathtosave, Filename);
+                    await ser1.GenerateXsdSchemaAsync(Pathtosave, Filename, Schemaname);
+                }
+                catch (Exception ex)
+                {
+                    IErLogger logger = new Logger();
+                    await logger.WriteErrorAsync(ex);
+                }
+            });
         }
         public async Task SendInfo()
         {
-            try
+            await Task.Run(async() =>
             {
-                IFileTransferService ser1 = new Transactions();
-                await ser1.TransferFiles(Filename, Schemaname, Pathtosave, TargetFolderPath);
-            }
-            catch (Exception ex)
-            {
-                IErLogger logger = new Logger();
-                await Task.Run(() => logger.WriteErrorAsync(ex));
-            }
-           
+                try
+                {
+                    IFileTransferService ser1 = new Transactions();
+                    await ser1.TransferFiles(Filename, Schemaname, Pathtosave, TargetFolderPath);
+                }
+                catch (Exception ex)
+                {
+                    IErLogger logger = new Logger();
+                    await logger.WriteErrorAsync(ex);
+                }
+            });
         }
     }
 }

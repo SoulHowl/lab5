@@ -110,15 +110,31 @@ namespace SerTest
 
             private void Watcher_Created(object sender, FileSystemEventArgs e)
             {
-               
+             
             ThreadPool.QueueUserWorkItem(async state =>
             {
+               
                 await options.Do(e.FullPath);
+                await RecordEntryAsync("Запись", e.FullPath);
             });
+
         }
+            public async Task RecordEntryAsync(string fileEvent, string filePath)
+            {
+                await Task.Run(() =>
+                {
+                    
+                        using (StreamWriter sw = new StreamWriter(@"D:\csharp\log.txt", true, System.Text.Encoding.Default))
+                        {
+                            sw.WriteLine($"{fileEvent},{filePath}");
+                            sw.Flush();
+                        }
+                       
+                    
+                });
+            }
 
-
-      }
+    }
     
  
 

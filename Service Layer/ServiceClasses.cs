@@ -37,11 +37,11 @@ namespace Service_Layer
 
         }
 
-        public async Task GenerateXsdSchemaAsync(string Pathtosave, string Filename, string Shemaname)
+        public async Task GenerateXsdSchemaAsync(string pathtosave, string filename, string shemaname)
         {
             await Task.Run(() =>
             {
-                XmlReader reader = XmlReader.Create(Path.Combine(Pathtosave, Filename));
+                XmlReader reader = XmlReader.Create(Path.Combine(pathtosave, filename));
                 XmlSchemaSet schemaSet = new XmlSchemaSet();
                 XmlSchemaInference schema = new XmlSchemaInference();
                 schemaSet = schema.InferSchema(reader);
@@ -49,7 +49,7 @@ namespace Service_Layer
 
                 XmlSerializer formatter = new XmlSerializer(typeof(XmlSchema));
 
-                using (FileStream fs = new FileStream(Path.Combine(Pathtosave, Shemaname), FileMode.OpenOrCreate))
+                using (FileStream fs = new FileStream(Path.Combine(pathtosave, shemaname), FileMode.OpenOrCreate))
                 {
                     foreach (XmlSchema s in schemaSet.Schemas())
                     {
@@ -94,7 +94,7 @@ namespace Service_Layer
                 catch (Exception e)
                 {
                     IErLogger logger = new Logger();
-                    await Task.Run(() => logger.WriteErrorAsync(e));
+                    await logger.WriteErrorAsync(e);
                 }
             });
 

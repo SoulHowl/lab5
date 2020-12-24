@@ -41,7 +41,7 @@ namespace ErrorLogger
 
         public async Task WriteErrorAsync(Exception ex)
         {
-            await Task.Run(async() =>
+            await Task.Run(() =>
             {
                 using (var connection = new SqlConnection(Props.ConnectionString))
                 {
@@ -82,7 +82,7 @@ namespace ErrorLogger
                         string Mes = "Logger Faild" + DateTime.Now.ToString(CultureInfo.InvariantCulture) + "\n";
                         using (StreamWriter sw = new StreamWriter(Props.FileLog, true, System.Text.Encoding.Default))
                         {
-                          await  sw.WriteLineAsync(exe.Message); 
+                            sw.WriteLine(exe.Message); 
                         }
 
 
