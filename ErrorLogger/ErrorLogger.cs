@@ -39,54 +39,59 @@ namespace ErrorLogger
             numberErr = 2;
         }
 
-        public void WriteError(Exception ex)
+        public async Task WriteErrorAsync(Exception ex)
         {
-            using (var connection = new SqlConnection(Props.ConnectionString))
+            await Task.Run(async() =>
             {
-                connection.Open();
-                SqlTransaction transaction = connection.BeginTransaction();
-                var command = new SqlCommand("SaveErr", connection)
+                using (var connection = new SqlConnection(Props.ConnectionString))
                 {
-                    CommandType = CommandType.StoredProcedure
-                };
-                command.Transaction = transaction;
-                var command1 = new SqlCommand("GetMaxErrorNum", connection)
-                {
-                    CommandType = CommandType.StoredProcedure
-                };
-                command1.Transaction = transaction;
-
-                try
-                {
-                    var outputparam = new SqlParameter("@NUM", SqlDbType.Int);
-                    outputparam.Direction = ParameterDirection.Output;
-                    command1.Parameters.Add(outputparam);
-                    command1.ExecuteNonQuery();
-                    command.Parameters.Add(new SqlParameter("@ErrorID", Convert.ToInt32(outputparam.Value)+1));
-                    command.Parameters.Add(new SqlParameter("@ErrorMess", ex.Message));
-                    command.Parameters.Add(new SqlParameter("@ErrorClass", ex.Source));
-                    command.Parameters.Add(new SqlParameter("@ErrorNum", ex.HResult));
-                    command.Parameters.Add(new SqlParameter("@ErrorMethodName", ex.TargetSite.Name));
-                    command.Parameters.Add(new SqlParameter("@ErrorTime", DateTime.Now));
-                    command.ExecuteNonQuery();
-
-                    transaction.Commit();
-                    numberErr++;
-                }
-                catch (Exception exe)
-                {
-                    transaction.Rollback();
-                    
-                    string Mes = "Logger Faild" + DateTime.Now.ToString(CultureInfo.InvariantCulture) + "\n";
-                    using (StreamWriter sw = new StreamWriter(Props.FileLog, true, System.Text.Encoding.Default))
+                    connection.Open();
+                    SqlTransaction transaction = connection.BeginTransaction();
+                    var command = new SqlCommand("SaveErr", connection)
                     {
-                        sw.WriteLine(exe.Message);///////////////////////////////////////////////////
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    command.Transaction = transaction;
+                    var command1 = new SqlCommand("GetMaxErrorNum", connection)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    command1.Transaction = transaction;
+
+                    try
+                    {
+                        var outputparam = new SqlParameter("@NUM", SqlDbType.Int);
+                        outputparam.Direction = ParameterDirection.Output;
+                        command1.Parameters.Add(outputparam);
+                        command1.ExecuteNonQuery();
+                        command.Parameters.Add(new SqlParameter("@ErrorID", Convert.ToInt32(outputparam.Value) + 1));
+                        command.Parameters.Add(new SqlParameter("@ErrorMess", ex.Message));
+                        command.Parameters.Add(new SqlParameter("@ErrorClass", ex.Source));
+                        command.Parameters.Add(new SqlParameter("@ErrorNum", ex.HResult));
+                        command.Parameters.Add(new SqlParameter("@ErrorMethodName", ex.TargetSite.Name));
+                        command.Parameters.Add(new SqlParameter("@ErrorTime", DateTime.Now));
+                        command.ExecuteNonQuery();
+
+                        transaction.Commit();
+                        numberErr++;
                     }
-                    
+                    catch (Exception exe)
+                    {
+                        transaction.Rollback();
+
+                        string Mes = "Logger Faild" + DateTime.Now.ToString(CultureInfo.InvariantCulture) + "\n";
+                        using (StreamWriter sw = new StreamWriter(Props.FileLog, true, System.Text.Encoding.Default))
+                        {
+                          await  sw.WriteLineAsync(exe.Message); 
+                        }
 
 
+
+                    }
                 }
-            }
+            });
+        
+    
         }
     }
 }

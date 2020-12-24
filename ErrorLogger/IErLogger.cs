@@ -8,6 +8,6 @@ namespace ErrorLogger
 {
     public interface IErLogger
     {
-        public void  WriteError(Exception ex);
+        public  Task  WriteErrorAsync(Exception ex);
     }
 }

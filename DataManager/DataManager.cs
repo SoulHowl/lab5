@@ -33,7 +33,7 @@ namespace DataManager
             catch (Exception ex)
             {
                 IErLogger logger=new Logger();
-                await Task.Run(()=>logger.WriteError(ex));
+                await Task.Run(()=>logger.WriteErrorAsync(ex));
             }
           
         }
@@ -47,7 +47,7 @@ namespace DataManager
             catch (Exception ex)
             {
                 IErLogger logger = new Logger();
-                await Task.Run(() => logger.WriteError(ex));
+                await Task.Run(() => logger.WriteErrorAsync(ex));
             }
            
         }

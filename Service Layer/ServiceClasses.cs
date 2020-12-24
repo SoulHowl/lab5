@@ -94,7 +94,7 @@ namespace Service_Layer
                 catch (Exception e)
                 {
                     IErLogger logger = new Logger();
-                    await Task.Run(() => logger.WriteError(e));
+                    await Task.Run(() => logger.WriteErrorAsync(e));
                 }
             });
 

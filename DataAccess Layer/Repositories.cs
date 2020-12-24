@@ -53,7 +53,7 @@ namespace DataAccess_Layer
                     {
                         transaction.Rollback();
                         IErLogger logger = new Logger();
-                        await Task.Run(() => logger.WriteError(ex)); 
+                        await Task.Run(() => logger.WriteErrorAsync(ex));
                     }
                     finally
                     {
