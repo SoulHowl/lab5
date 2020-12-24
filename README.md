@@ -6,7 +6,7 @@
 -Data Access Layer,
 -Servise Layer,
 -ErrorLogger,
--FileManager,
+-FileManager,DataManager
 -операции чтения/записи файлов.
 Например:
 ![Image alt](https://github.com/SoulHowl/lab5/blob/main/p1.png)
