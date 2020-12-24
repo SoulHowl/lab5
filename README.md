@@ -3,11 +3,11 @@
 Произошел рефакторинг кода.
 Многие методы были переведены в асинхронный вариант с использованием стиля TAP.
 Перевод в асинхронный вариант затронул следующие места:
-Data Access Layer
-Servise Layer
-ErrorLogger
-FileManager
-операции чтения/записи файлов
+-Data Access Layer,
+-Servise Layer,
+-ErrorLogger,
+-FileManager,
+-операции чтения/записи файлов.
 Например:
 ![Image alt](https://github.com/SoulHowl/lab5/blob/main/p1.png)
 Каждая итерация работы сервисов запускается в отдельном потоке с помощью ThreadPool.Например для Datamanager:
